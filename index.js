@@ -7,7 +7,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: ['https://encuesta-cierre-umd-front.onrender.com/'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
