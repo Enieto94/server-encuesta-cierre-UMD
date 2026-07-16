@@ -1,0 +1,15 @@
+{
+  "name": "formulario-server",
+  "version": "1.0.0",
+  "description": "Backend para encuesta MD Micronegocios",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.2",
+    "express": "^4.21.0",
+    "pg": "^8.12.0"
+  }
+}
