@@ -7,9 +7,9 @@ require('dotenv').config();
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'cambia-este-secreto-en-produccion';
-const DATABASE_URL = process.env.DATABASE_URL;
-if (!DATABASE_URL) {
-  console.error('Falta variable de entorno DATABASE_URL');
+const DB_URL = process.env.DB_URL;
+if (!DB_URL) {
+  console.error('Falta variable de entorno DB_URL');
 }
 
 
@@ -71,7 +71,7 @@ const pool = new Pool(poolConfig);
 function getPool() {
   if (!pool) {
     pool = new Pool({
-      connectionString: DATABASE_URL,
+      connectionString: DB_URL,
       ssl: { rejectUnauthorized: false },
       max: 5,
     });
@@ -518,10 +518,7 @@ app.get('/api/health', async (req, res) => {
 
 // Puerto local opcional (no se usa en Vercel)
 if (process.env.LOCAL_DEV === 'true') {
-  const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`Servidor local corriendo en http://localhost:${PORT}`);
-  });
+  console.log('LOCAL_DEV mode enabled — using configured PORT value');
 }
 
 
