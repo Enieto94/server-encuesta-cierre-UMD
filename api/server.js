@@ -9,6 +9,7 @@ const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 
 const app = express();
+const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors({
     origin: ['https://encuesta-cierre-umd-front.onrender.com/', 'https://encuesta-cierre-umd-front.onrender.com'],
