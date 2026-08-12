@@ -12,49 +12,7 @@ if (!DATABASE_URL) {
   console.error('Falta variable de entorno DATABASE_URL');
 }
 
-let pool;
-function getPool() {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-      max: 5,
-    });
-  }
-  return pool;
-}
 
-// =============================================
-// Helpers
-// =============================================
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password).digest('hex');
-}
-
-function signToken(userData) {
-  return jwt.sign(userData, JWT_SECRET, { expiresIn: '7d' });
-}
-
-function requireAuth(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'No autorizado' });
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    req.user = payload;
-    next();
-  } catch (e) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
-}
-
-function requireAdmin(req, res, next) {
-  requireAuth(req, res, () => {
-    if (!req.user.es_admin) {
-      return res.status(403).json({ error: 'Acceso denegado' });
-    }
-    next();
-  });
-}
 app.use(cors({
   origin: ['https://encuesta-cierre-umd-front.onrender.com', 'https://encuesta-cierre-umd-front.onrender.com/'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -108,6 +66,50 @@ const poolConfig = connectionString
 
 // Conexión a la base de datos PostgreSQL
 const pool = new Pool(poolConfig);
+
+
+function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+      max: 5,
+    });
+  }
+  return pool;
+}
+
+// =============================================
+// Helpers
+// =============================================
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+function signToken(userData) {
+  return jwt.sign(userData, JWT_SECRET, { expiresIn: '7d' });
+}
+
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'No autorizado' });
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch (e) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+}
+
+function requireAdmin(req, res, next) {
+  requireAuth(req, res, () => {
+    if (!req.user.es_admin) {
+      return res.status(403).json({ error: 'Acceso denegado' });
+    }
+    next();
+  });
+}
 
 // Verificar conexión al iniciar
 pool.query('SELECT NOW()')
