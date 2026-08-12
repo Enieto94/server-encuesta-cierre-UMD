@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 app.use(cors({
-    origin: ['https://encuesta-cierre-umd-front.onrender.com/'],
+    origin: ['https://encuesta-cierre-umd-front.onrender.com/', 'https://encuesta-cierre-umd-front.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
 }));
