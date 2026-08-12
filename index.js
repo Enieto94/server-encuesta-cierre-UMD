@@ -7,7 +7,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors({
-  origin: ['https://encuesta-cierre-umd-front.onrender.com/', 'https://encuesta-cierre-umd-front.onrender.com'],
+  origin: ['https://encuesta-cierre-umd-front.onrender.com', 'https://encuesta-cierre-umd-front.onrender.com/'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
@@ -31,7 +31,7 @@ const buildConnectionString = () => {
   const port = process.env.DB_PORT || '5432';
 
   if (host.includes('render.com')) {
-    return `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=require`;
+    return `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=verify-full`;
   }
 
   return `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}`;
@@ -43,9 +43,11 @@ console.log(`Conectado a la base de datos en: ${connectionString || 'localhost'}
 const poolConfig = connectionString
   ? {
     connectionString,
-    ssl: connectionString.includes('render.com') || connectionString.includes('sslmode=require')
-      ? { rejectUnauthorized: false }
-      : false,
+    ssl: connectionString.includes('render.com') || connectionString.includes('sslmode=verify-full')
+      ? true
+      : connectionString.includes('sslmode=require')
+        ? { rejectUnauthorized: false }
+        : false,
   }
   : {
     host: process.env.DB_HOST,
