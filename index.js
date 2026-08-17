@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT) || 3001;
 
 app.use(cors({
   // origin: ['https://encuesta-cierre-umd-front.onrender.com', 'https://encuesta-cierre-umd-front.onrender.com/', 'https://formulario-i2ci.onrender.com/', 'https://formulario-i2ci.onrender.com'],
-  origin: ['http://localhost:3000', 'http://localhost:3000/'],
+  origin: ['http://localhost:3000', 'http://localhost:3000/', "https://formulario-i2ci.onrender.com", "https://formulario-i2ci.onrender.com/"],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
