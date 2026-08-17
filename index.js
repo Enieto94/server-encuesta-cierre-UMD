@@ -333,53 +333,69 @@ app.post('/respuestas', requireAuth, async (req, res) => {
         ? JSON.stringify(val)
         : val;
 
-    const query = `
-      INSERT INTO respuestas (
-        fecha_envio, consentimiento, usuario_id, nrc, nombre_facilitador,
-        q8_apoyo_acertado, q9_beneficios, q10_otras_beneficios,
-        q11_aspectos_positivos, q12_otros_aspectos_positivos,
-        q13_profundizar, q14_otros_profundizar,
-        q15_socializaron_servicios, q16_servicios_postulados, q17_otros_servicios,
-        q18_servicios_accedidos, q19_recomendaria,
-        q20_razones_recomendar, q20_porque_no, q21_comentarios,
-        q22_temas_innovacion, q23_nuevos_productos, q24_mejoro_productos,
-        q25_nuevas_tecnologias, q26_plan_metas, q27_inventario,
-        q28_temas_modelo, q29_plan_estrategico, q30_principales_compradores,
-        q31_ofrece_vende, q32_paga_contado, q33_aprendizajes_modelo,
-        q34_temas_financieros, q35_cuentas_ganancias, q36_rango_ventas,
-        q37_mejoro_ventas, q38_rango_aumento_ventas, q39_cuentas_gastos,
-        q40_punto_equilibrio, q41_cuenta_bancaria, q42_estados_financieros,
-        q43_acceso_credito,
-        q44_temas_mercadeo, q45_estrategias_dar_conocer, q46_aviso_logo,
-        q47_marca_logo, q48_estrategias_atraer, q49_vende_redes,
-        q50_clientes_semanales, q51_clientes_recurrentes,
-        q52_temas_formalizacion, q53_camara_comercio, q54_rut, q55_nit,
-        q56_aportes_propietario, q57_aportes_empleados
-      ) VALUES (
-        $1,$2,$3,$4,
-        $5,$6,$7,
-        $8,$9,
-        $10,$11,
-        $12,$13,$14,
-        $15,$16,
-        $17,$18,$19,
-        $20,$21,$22,
-        $23,$24,$25,
-        $26,$27,$28,
-        $29,$30,$31,
-        $32,$33,$34,
-        $35,$36,$37,
-        $38,$39,$40,
-        $41,
-        $42,$43,$44,
-        $45,$46,$47,
-        $48,$49,
-        $50,$51,$52,$53,
-        $54,$55,$56
-      ) RETURNING id
-    `;
+    const fechaEnvio = new Date().toISOString();
+
+    const columns = [
+      'fecha_envio',
+      'consentimiento',
+      'usuario_id',
+      'nrc',
+      'nombre_facilitador',
+      'q8_apoyo_acertado',
+      'q9_beneficios',
+      'q10_otras_beneficios',
+      'q11_aspectos_positivos',
+      'q12_otros_aspectos_positivos',
+      'q13_profundizar',
+      'q14_otros_profundizar',
+      'q15_socializaron_servicios',
+      'q16_servicios_postulados',
+      'q17_otros_servicios',
+      'q18_servicios_accedidos',
+      'q19_recomendaria',
+      'q20_razones_recomendar',
+      'q20_porque_no',
+      'q21_comentarios',
+      'q22_temas_innovacion',
+      'q23_nuevos_productos',
+      'q24_mejoro_productos',
+      'q25_nuevas_tecnologias',
+      'q26_plan_metas',
+      'q27_inventario',
+      'q28_temas_modelo',
+      'q29_plan_estrategico',
+      'q30_principales_compradores',
+      'q31_ofrece_vende',
+      'q32_paga_contado',
+      'q33_aprendizajes_modelo',
+      'q34_temas_financieros',
+      'q35_cuentas_ganancias',
+      'q36_rango_ventas',
+      'q37_mejoro_ventas',
+      'q38_rango_aumento_ventas',
+      'q39_cuentas_gastos',
+      'q40_punto_equilibrio',
+      'q41_cuenta_bancaria',
+      'q42_estados_financieros',
+      'q43_acceso_credito',
+      'q44_temas_mercadeo',
+      'q45_estrategias_dar_conocer',
+      'q46_aviso_logo',
+      'q47_marca_logo',
+      'q48_estrategias_atraer',
+      'q49_vende_redes',
+      'q50_clientes_semanales',
+      'q51_clientes_recurrentes',
+      'q52_temas_formalizacion',
+      'q53_camara_comercio',
+      'q54_rut',
+      'q55_nit',
+      'q56_aportes_propietario',
+      'q57_aportes_empleados'
+    ];
 
     const values = [
+      fechaEnvio,
       true,
       req.user.id,
       data.nrc || null,
@@ -425,7 +441,6 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       data.q41 || null,
       data.q42 || null,
       data.q43 || null,
-      // Módulo 2 - Mercadeo
       data.q44 || null,
       toJSON(data.q45) || null,
       data.q46 || null,
@@ -434,7 +449,6 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       data.q49 || null,
       data.q50 || null,
       data.q51 || null,
-      // Módulo 2 - Formalización
       data.q52 || null,
       data.q53 || null,
       data.q54 || null,
@@ -442,6 +456,12 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       data.q56 || null,
       data.q57 || null,
     ];
+
+    const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
+    const query = `
+      INSERT INTO respuestas (${columns.join(', ')})
+      VALUES (${placeholders}) RETURNING id
+    `;
 
     const db = getPool();
     const result = await db.query(query, values);
