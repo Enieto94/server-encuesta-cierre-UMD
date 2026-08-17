@@ -335,7 +335,7 @@ app.post('/respuestas', requireAuth, async (req, res) => {
 
     const query = `
       INSERT INTO respuestas (
-        consentimiento, usuario_id, nrc, nombre_facilitador,
+        fecha_envio, consentimiento, usuario_id, nrc, nombre_facilitador,
         q8_apoyo_acertado, q9_beneficios, q10_otras_beneficios,
         q11_aspectos_positivos, q12_otros_aspectos_positivos,
         q13_profundizar, q14_otros_profundizar,
