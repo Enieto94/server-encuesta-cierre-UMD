@@ -327,15 +327,19 @@ const handleGetResponses = async (req, res) => {
 app.post('/respuestas', requireAuth, async (req, res) => {
   try {
     const data = req.body;
+    const db = getPool();
 
     const toJSON = (val) =>
       Array.isArray(val) || (val && typeof val === 'object')
         ? JSON.stringify(val)
         : val;
 
+    const { rows: idRows } = await db.query('SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM respuestas');
+    const nextId = idRows[0]?.next_id ?? 1;
+
     const query = `
       INSERT INTO respuestas (
-        consentimiento, usuario_id, nrc, nombre_facilitador,
+        id, consentimiento, usuario_id, nrc, nombre_facilitador,
         q8_apoyo_acertado, q9_beneficios, q10_otras_beneficios,
         q11_aspectos_positivos, q12_otros_aspectos_positivos,
         q13_profundizar, q14_otros_profundizar,
@@ -356,30 +360,30 @@ app.post('/respuestas', requireAuth, async (req, res) => {
         q52_temas_formalizacion, q53_camara_comercio, q54_rut, q55_nit,
         q56_aportes_propietario, q57_aportes_empleados
       ) VALUES (
-        $1,$2,$3,$4,
-        $5,$6,$7,
-        $8,$9,
-        $10,$11,
-        $12,$13,$14,
-        $15,$16,
-        $17,$18,$19,
-        $20,$21,$22,
-        $23,$24,$25,
-        $26,$27,$28,
-        $29,$30,$31,
-        $32,$33,$34,
-        $35,$36,$37,
-        $38,$39,$40,
-        $41,
-        $42,$43,$44,
-        $45,$46,$47,
-        $48,$49,
-        $50,$51,$52,$53,
-        $54,$55
+        $1,$2,$3,$4,$5,
+        $6,$7,$8,
+        $9,$10,
+        $11,$12,
+        $13,$14,$15,
+        $16,$17,
+        $18,$19,$20,
+        $21,$22,$23,
+        $24,$25,$26,
+        $27,$28,$29,
+        $30,$31,$32,
+        $33,$34,$35,
+        $36,$37,$38,
+        $39,
+        $40,$41,$42,
+        $43,$44,$45,
+        $46,$47,
+        $48,$49,$50,$51,
+        $52,$53
       ) RETURNING id
     `;
 
     const values = [
+      nextId,
       true,
       req.user.id,
       data.nrc || null,
@@ -443,7 +447,6 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       data.q57 || null,
     ];
 
-    const db = getPool();
     const result = await db.query(query, values);
 
     res.status(201).json({
