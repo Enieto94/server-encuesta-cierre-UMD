@@ -295,7 +295,7 @@ const handleSaveResponse = async (req, res) => {
         q53_cuentas_ganancias, q54_promedio_ganancias,
         q55_rango_ventas, q56_mejoro_ventas,
         q57_rango_aumento, q58_razon_disminucion,
-        q59_cuentas_gastos, q60_cuenta_bancaria, q61_capacidad_endeudamiento
+        q59_cuentas_gastos, q60_cuenta_bancaria, q61_capacidad_endeudamiento, q62_empleados_generados_micronegocio, q63_numero_empleados_informales, q64_numero_empleados_formales
       ) VALUES (${placeholders}) RETURNING id
     `;
 
@@ -391,7 +391,10 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       'q54_rut',
       'q55_nit',
       'q56_aportes_propietario',
-      'q57_aportes_empleados'
+      'q57_aportes_empleados',
+      'q62_empleados_generados_micronegocio',
+      'q63_numero_empleados_informales',
+      'q64_numero_empleados_formales'
     ];
 
     const values = [
@@ -455,6 +458,9 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       data.q55 || null,
       data.q56 || null,
       data.q57 || null,
+      data.q62 || null,
+      data.q63 || null,
+      data.q64 || null,
     ];
 
     const placeholders = values.map((_, index) => `$${index + 1}`).join(', ');
