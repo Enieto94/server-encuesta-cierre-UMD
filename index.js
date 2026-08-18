@@ -340,6 +340,7 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       'consentimiento',
       'usuario_id',
       'nrc',
+      'periodo',
       'nombre_facilitador',
       'q8_apoyo_acertado',
       'q9_beneficios',
@@ -402,6 +403,7 @@ app.post('/respuestas', requireAuth, async (req, res) => {
       true,
       req.user.id,
       data.nrc || null,
+      data.periodo || null,
       data.nombre_facilitador || null,
       // Módulo 1
       data.q8 || null,
